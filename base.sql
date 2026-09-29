@@ -51,3 +51,66 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2026-09-22 14:43:50
+
+-- CRUD para la tabla `usuarios` (MySQL 8)
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS `sp_usuarios_crear`$$
+CREATE PROCEDURE `sp_usuarios_crear`(
+  IN p_usuario varchar(50),
+  IN p_nombre varchar(50),
+  IN p_apellido varchar(50)
+)
+BEGIN
+  INSERT INTO `usuarios` (`usu_usuario`, `usu_nombre`, `usu_apellido`)
+  VALUES (p_usuario, p_nombre, p_apellido);
+
+  SELECT LAST_INSERT_ID() AS `usu_id`;
+END$$
+
+DROP PROCEDURE IF EXISTS `sp_usuarios_listar`$$
+CREATE PROCEDURE `sp_usuarios_listar`()
+BEGIN
+  SELECT `usu_id`, `usu_usuario`, `usu_nombre`, `usu_apellido`
+  FROM `usuarios`
+  ORDER BY `usu_id`;
+END$$
+
+DROP PROCEDURE IF EXISTS `sp_usuarios_obtener`$$
+CREATE PROCEDURE `sp_usuarios_obtener`(IN p_usu_id int)
+BEGIN
+  SELECT `usu_id`, `usu_usuario`, `usu_nombre`, `usu_apellido`
+  FROM `usuarios`
+  WHERE `usu_id` = p_usu_id;
+END$$
+
+DROP PROCEDURE IF EXISTS `sp_usuarios_actualizar`$$
+CREATE PROCEDURE `sp_usuarios_actualizar`(
+  IN p_usu_id int,
+  IN p_usuario varchar(50),
+  IN p_nombre varchar(50),
+  IN p_apellido varchar(50)
+)
+BEGIN
+  UPDATE `usuarios`
+  SET `usu_usuario` = p_usuario,
+      `usu_nombre` = p_nombre,
+      `usu_apellido` = p_apellido
+  WHERE `usu_id` = p_usu_id;
+END$$
+
+DROP PROCEDURE IF EXISTS `sp_usuarios_eliminar`$$
+CREATE PROCEDURE `sp_usuarios_eliminar`(IN p_usu_id int)
+BEGIN
+  DELETE FROM `usuarios`
+  WHERE `usu_id` = p_usu_id;
+END$$
+
+DELIMITER ;
+
+-- Ejemplos de uso:
+-- CALL sp_usuarios_crear('usuario1', 'Nombre', 'Apellido');
+-- CALL sp_usuarios_listar();
+-- CALL sp_usuarios_obtener(1);
+-- CALL sp_usuarios_actualizar(1, 'usuario1', 'Nombre actualizado', 'Apellido actualizado');
+-- CALL sp_usuarios_eliminar(1);

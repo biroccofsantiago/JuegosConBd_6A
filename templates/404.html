@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Usuario no encontrado</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <main class="layout narrow-layout">
+    <section class="panel empty-state error-state">
+      <span class="empty-icon">?</span>
+      <h1>Usuario no encontrado</h1>
+      <p>El registro solicitado no existe o fue eliminado.</p>
+      <a class="button button-primary" href="{{ url_for('inicio') }}">Volver al directorio</a>
+    </section>
+  </main>
+</body>
+</html>

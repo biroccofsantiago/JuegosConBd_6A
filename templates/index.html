@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Usuarios | Juegos 6A</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <main class="layout">
+    <header class="topbar">
+      <div class="brand-mark">J6</div>
+      <div>
+        <p class="eyebrow">JUEGOS 6A · ADMINISTRACIÓN</p>
+        <h1>Gestión de usuarios</h1>
+      </div>
+      <span class="status"><span></span> Panel CRUD</span>
+    </header>
+
+    {% with mensajes = get_flashed_messages(with_categories=true) %}
+      {% if mensajes %}
+        <section class="messages" aria-live="polite">
+          {% for categoria, mensaje in mensajes %}
+            <p class="alert alert-{{ categoria }}">{{ mensaje }}</p>
+          {% endfor %}
+        </section>
+      {% endif %}
+    {% endwith %}
+
+    {% if error_db %}
+      <p class="alert alert-error" role="alert">{{ error_db }}</p>
+    {% endif %}
+
+    <section class="content-grid">
+      <section class="panel form-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">NUEVO REGISTRO</p>
+            <h2>Agregar usuario</h2>
+          </div>
+          <span class="heading-icon">＋</span>
+        </div>
+        <form action="{{ url_for('crear_usuario') }}" method="post" class="user-form">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <label for="usu_usuario">Usuario</label>
+          <input id="usu_usuario" name="usu_usuario" maxlength="50" placeholder="Ej. srodriguez" required>
+
+          <label for="usu_nombre">Nombre</label>
+          <input id="usu_nombre" name="usu_nombre" maxlength="50" placeholder="Nombre" required>
+
+          <label for="usu_apellido">Apellido</label>
+          <input id="usu_apellido" name="usu_apellido" maxlength="50" placeholder="Apellido" required>
+
+          <button class="button button-primary" type="submit">Crear usuario <span>→</span></button>
+        </form>
+        <p class="form-note">Todos los campos son obligatorios. Máximo 50 caracteres.</p>
+      </section>
+
+      <section class="panel list-panel">
+        <div class="panel-heading list-heading">
+          <div>
+            <p class="eyebrow">DIRECTORIO</p>
+            <h2>Usuarios registrados</h2>
+          </div>
+          <span class="count">{{ usuarios|length }} total</span>
+        </div>
+
+        {% if usuarios %}
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Usuario</th><th>Nombre completo</th><th class="actions-heading">Acciones</th></tr>
+              </thead>
+              <tbody>
+                {% for usuario in usuarios %}
+                  <tr>
+                    <td>
+                      <div class="user-cell">
+                        <span class="avatar">{{ (usuario.usu_nombre or '?')[0]|upper }}</span>
+                        <span><strong>{{ usuario.usu_usuario or '—' }}</strong><small>ID #{{ usuario.usu_id }}</small></span>
+                      </div>
+                    </td>
+                    <td>{{ usuario.usu_nombre or '' }} {{ usuario.usu_apellido or '' }}</td>
+                    <td>
+                      <div class="row-actions">
+                        <a class="button button-small button-light" href="{{ url_for('editar_usuario', usuario_id=usuario.usu_id) }}">Editar</a>
+                        <form action="{{ url_for('eliminar_usuario', usuario_id=usuario.usu_id) }}" method="post" onsubmit="return confirm('¿Eliminar este usuario? Esta acción no se puede deshacer.');">
+                          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                          <button class="button button-small button-delete" type="submit">Eliminar</button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% elif not error_db %}
+          <div class="empty-state">
+            <span class="empty-icon">◎</span>
+            <h3>Todavía no hay usuarios</h3>
+            <p>Cuando crees un usuario, aparecerá en esta lista.</p>
+          </div>
+        {% endif %}
+      </section>
+    </section>
+    <footer>Administración de usuarios <span>·</span> Base de datos MySQL</footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Editar usuario | Juegos 6A</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <main class="layout narrow-layout">
+    <header class="topbar">
+      <a class="brand-mark brand-link" href="{{ url_for('inicio') }}">J6</a>
+      <div>
+        <p class="eyebrow">JUEGOS 6A · ADMINISTRACIÓN</p>
+        <h1>Editar usuario</h1>
+      </div>
+    </header>
+
+    {% with mensajes = get_flashed_messages(with_categories=true) %}
+      {% if mensajes %}
+        <section class="messages" aria-live="polite">
+          {% for categoria, mensaje in mensajes %}
+            <p class="alert alert-{{ categoria }}">{{ mensaje }}</p>
+          {% endfor %}
+        </section>
+      {% endif %}
+    {% endwith %}
+
+    <section class="panel form-panel edit-panel">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">REGISTRO #{{ usuario.usu_id }}</p>
+          <h2>Actualizar datos</h2>
+        </div>
+        <span class="heading-icon">✎</span>
+      </div>
+      <form action="{{ url_for('editar_usuario', usuario_id=usuario.usu_id) }}" method="post" class="user-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label for="usu_usuario">Usuario</label>
+        <input id="usu_usuario" name="usu_usuario" maxlength="50" value="{{ usuario.usu_usuario or '' }}" required>
+
+        <label for="usu_nombre">Nombre</label>
+        <input id="usu_nombre" name="usu_nombre" maxlength="50" value="{{ usuario.usu_nombre or '' }}" required>
+
+        <label for="usu_apellido">Apellido</label>
+        <input id="usu_apellido" name="usu_apellido" maxlength="50" value="{{ usuario.usu_apellido or '' }}" required>
+
+        <div class="form-actions">
+          <a class="button button-light" href="{{ url_for('inicio') }}">Cancelar</a>
+          <button class="button button-primary" type="submit">Guardar cambios <span>→</span></button>
+        </div>
+      </form>
+    </section>
+  </main>
+</body>
+</html>
